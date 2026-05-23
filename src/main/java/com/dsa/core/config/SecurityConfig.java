@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,15 +27,40 @@ public class SecurityConfig {
 				.authorizeHttpRequests((requests) -> requests
 						.requestMatchers("/register").permitAll() // Allow access to registration without authentication
 						.requestMatchers("/login").anonymous() // Allow only anonymous users to access /login
-						.requestMatchers("/logout").authenticated() // Allow authenticated users to /logout
+                        .requestMatchers("/logout").authenticated() // Allow only logged-in users to /logout
 						.anyRequest().authenticated()) // All other requests need authentication
-				.formLogin((form) -> form
-						.permitAll()
-						.defaultSuccessUrl("/api/profile", true)) // Redirect to /api/profile after successful login
-//				.logout((logout) -> logout.permitAll())
+				.formLogin((login) -> login
+						.defaultSuccessUrl("/api/profile", true) // Redirect to /api/profile after successful login
+						.successHandler((request, response, authentication) -> {
+							if (request.getSession().getAttribute("firstLogin") == null) {
+								request.getSession().setAttribute("firstLogin", true);
+								response.sendRedirect("/api/profile");
+							} else {
+								response.setStatus(HttpStatus.OK.value());
+								response.getWriter().write("Already logged in.");
+							}
+						}))
+                .logout((logout) -> logout
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            if (authentication != null && authentication.isAuthenticated()) {
+                                if (request.getSession(false) != null) {
+                                    request.getSession().invalidate();
+                                }
+                                response.setStatus(HttpStatus.OK.value());
+                                response.getWriter().write("Logged out successfully.");
+                            } else {
+                                response.setStatus(HttpStatus.OK.value());
+                                response.getWriter().write("Already logged out.");
+                            }
+                        })
+                        .deleteCookies("JSESSIONID")) // Clear the session cookie
+//                        .invalidateHttpSession(true)) // Invalidate the session
 //              .httpBasic((basic) -> basic.disable()) // Disable Spring's default HTTP Basic authentication
-				.exceptionHandling((exceptions) -> exceptions
-						.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+                .exceptionHandling((exceptions) -> exceptions
+                	    .authenticationEntryPoint((request, response, authException) -> {
+                	        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                	        response.getWriter().write("Please login.");
+                	    }));
 
 		log.info("Configured SecurityFilterChain: {}", http);
 

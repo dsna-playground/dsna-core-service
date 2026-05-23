@@ -7,10 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dsa.core.dto.RegistrationRequest;
-import com.dsa.core.model.User;
 import com.dsa.core.service.UserService;
-
-import jakarta.servlet.http.HttpSession;
 
 @RestController
 public class AuthController {
@@ -30,21 +27,4 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Registration failed: " + e.getMessage());
         }
     }
-
-	/*
-	 * @PostMapping("/login") public ResponseEntity<String> login(@RequestBody
-	 * RegistrationRequest loginRequest, HttpSession session) { User user =
-	 * userService.authenticateUser(loginRequest.getUsername(),
-	 * loginRequest.getPassword()); if (user != null) {
-	 * session.setAttribute("userId", user.getId()); return
-	 * ResponseEntity.ok("Login successful"); } else { return
-	 * ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials"); }
-	 * }
-	 */
-
-	/*
-	 * @PostMapping("/logout") public ResponseEntity<String> logout(HttpSession
-	 * session) { session.invalidate(); return
-	 * ResponseEntity.ok("Logged out successfully"); }
-	 */
 }
