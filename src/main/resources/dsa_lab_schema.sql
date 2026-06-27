@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS dsa_lab.user_account (
 
 CREATE TABLE IF NOT EXISTS dsa_lab.user_profile (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER UNIQUE NOT NULL REFERENCES dsa_lab.users(id),
+    user_id INTEGER UNIQUE NOT NULL REFERENCES dsa_lab.user_account(id),
     first_name VARCHAR(255),
     last_name VARCHAR(255),
     date_of_birth DATE,
