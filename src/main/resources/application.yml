@@ -17,3 +17,7 @@ spring:
 
 server:
   port: 8080
+
+jwt:
+  secret: "ThisIsASecureKeyThatIsAtLeast256BitsLong"  # Plain text secret
+  expiration-ms: 3600000

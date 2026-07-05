@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dsa.core.dto.RegistrationRequest;
+import com.dsa.core.exception.UserAlreadyExistsException;
 import com.dsa.core.model.Profile;
 import com.dsa.core.model.User;
 import com.dsa.core.repository.UserRepository;
@@ -19,8 +20,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService implements UserServiceInterface {
 
-	private UserRepository userRepository;
-	private PasswordEncoder passwordEncoder;
+	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
 	
 	@Lazy
 	@Autowired
@@ -29,10 +30,10 @@ public class UserService implements UserServiceInterface {
     @Transactional
     public void registerNewUser(RegistrationRequest request) {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            throw new IllegalStateException("Username already taken");
+            throw new UserAlreadyExistsException("Username already taken");
         }
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new IllegalStateException("Email already registered");
+            throw new UserAlreadyExistsException("Email already registered");
         }
 
         User newUser = new User();

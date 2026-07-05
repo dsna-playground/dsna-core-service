@@ -19,7 +19,6 @@ import com.dsa.core.model.User;
 import com.dsa.core.repository.UserRepository;
 import com.dsa.core.service.ProfileServiceInterface;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -45,7 +44,7 @@ public class ProfileController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createProfile(@RequestBody ProfileRequest profileRequest, HttpSession session) {
+    public ResponseEntity<String> createProfile(@RequestBody ProfileRequest profileRequest) {
         Long userId = getCurrentUserId();
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in!");
@@ -59,7 +58,7 @@ public class ProfileController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getProfile(HttpSession session) {
+    public ResponseEntity<?> getProfile() {
         Long userId = getCurrentUserId();
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in!");
@@ -73,7 +72,7 @@ public class ProfileController {
     }
 
     @PutMapping
-    public ResponseEntity<String> updateProfile(@RequestBody ProfileRequest profileRequest, HttpSession session) {
+    public ResponseEntity<String> updateProfile(@RequestBody ProfileRequest profileRequest) {
         Long userId = getCurrentUserId();
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in!");

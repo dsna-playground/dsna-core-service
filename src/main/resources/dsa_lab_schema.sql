@@ -18,3 +18,16 @@ CREATE TABLE IF NOT EXISTS dsa_lab.user_profile (
     created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS dsa_lab.user_workspace (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES dsa_lab.user_account(id) ON DELETE CASCADE,
+    workspace_name VARCHAR(255),
+    data_structure_type VARCHAR(50) NOT NULL,
+    structure_state JSONB NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_workspace_user_id
+    ON dsa_lab.user_workspace(user_id);
