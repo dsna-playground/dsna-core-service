@@ -49,7 +49,7 @@ public class SecurityConfig {
 				.sessionManagement((session) ->
 						session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests((requests) -> requests
-						.requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+						.requestMatchers("/api/auth/login", "/api/auth/register", "/vis-api/**").permitAll()
 						.requestMatchers("/api/v1/workspaces/**", "/api/profile/**").authenticated()
 						.anyRequest().authenticated())
                 .exceptionHandling((exceptions) -> exceptions
